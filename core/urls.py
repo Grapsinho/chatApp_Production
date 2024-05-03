@@ -7,8 +7,11 @@ import debug_toolbar
 urlpatterns = [
     path('secret-admin/', admin.site.urls),
 
+    # chat urls
+    path('', include('mainApp.urls')),
+
     # auth urls
-    path('auth/', include('users.urls')),
+    #path('auth/', include('users.urls')),
 
     #for development
     path("__debug__/", include(debug_toolbar.urls)),

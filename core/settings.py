@@ -32,6 +32,8 @@ INSTALLED_APPS = [
   
     # Local apps
     'users.apps.UsersConfig',
+    'mainApp.apps.MainappConfig',
+    'add_friend_app.apps.AddFriendAppConfig',
 
     #api
     'rest_framework',
@@ -46,6 +48,8 @@ INSTALLED_APPS = [
     #Development
     "debug_toolbar",
 ]
+
+AUTH_USER_MODEL = 'users.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
