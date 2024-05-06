@@ -662,6 +662,14 @@ body {
   }
 }
 
+.no_before > a::before {
+  content: none !important;
+}
+
+.no_before > a {
+  font-size: 17px;
+}
+
 @media screen and (max-width: 767px) {
   .chat-sidebar {
     top: unset;
@@ -716,6 +724,11 @@ body {
     bottom: 100%;
     top: unset;
   }
+
+  .no_before > a::before {
+    content: none !important;
+  }
+
   .chat-sidebar-menu > * > a:hover::before {
     bottom: calc(100% + 8px);
     left: 50%;
@@ -733,8 +746,21 @@ body {
     display: flex;
   }
   .conversation-default.active {
-    display: none;
     padding: 16px;
+    height: auto;
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 50%;
+    bottom: 50%;
+    background: none;
+  }
+}
+
+@media screen and (max-width: 300px) {
+  .user-photo-curr {
+    width: 50px !important;
+    height: 50px !important;
   }
 }
 /* end: Breakpoints */

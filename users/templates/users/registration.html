@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Registration Form</title>
+    <link rel="stylesheet" href="{% static 'css/login3.css' %}" />
+  </head>
+  <body>
+    <div class="container cont_user">
+      <div class="registration form">
+        <header>Signup</header>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div>
+            <label for="full_name">Full Name</label>
+            {{form.full_name}} {{ form.full_name.errors }}
+          </div>
+          <div>
+            <label for="avatar">Choose Your Avatar</label>
+            {{form.avatar}} {{ form.avatar.errors }}
+          </div>
+          <div>{{form.email}} {{ form.email.errors }}</div>
+
+          <div
+            class="passwords"
+            style="
+              display: flex;
+              gap: 1rem;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            <div style="width: 100%">
+              {{form.password1}} {{ form.password1.errors }}
+            </div>
+            <div style="width: 100%">
+              {{form.password2}} {{ form.password2.errors }}
+            </div>
+          </div>
+
+          <input type="button" class="button" value="Signup" />
+        </form>
+        <div class="signup">
+          <span class="signup"
+            >Already have an account?
+            <a href="{% url 'login' %}">Login</a>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      let email = document.querySelector("#id_email");
+      let full_name = document.querySelector("#id_full_name");
+      let avatar = document.querySelector("#id_avatar");
+      let password1 = document.querySelector("#id_password1");
+      let password2 = document.querySelector("#id_password2");
+      email.placeholder = "Enter Your Email";
+      password1.name = "password";
+      password1.placeholder = "Enter your password";
+      password2.placeholder = "Repeat your password";
+      full_name.value = "";
+      full_name.placeholder = "Your Full Name";
+
+      function sanitizeInput(userInput) {
+        // Remove all HTML tags from user input
+        let sanitizedInput = userInput.replace(/(<([^>]+)>)/gi, "");
+        return sanitizedInput;
+      }
+
+      function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          var cookies = document.cookie.split(";");
+          for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Check if this cookie string begins with the name provided
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1)
+              );
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+      var csrftoken = getCookie("csrftoken");
+
+      $(".button").on("click", function () {
+        const emailVal = email.value;
+        const pass1Val = password1.value;
+        const pass2Val = password2.value;
+        const full_nameVal = full_name.value;
+        const avatarVal = avatar.value;
+
+        if (
+          !emailVal ||
+          !pass1Val ||
+          !pass2Val ||
+          !full_nameVal ||
+          !avatarVal
+        ) {
+          alert(
+            "Please fill out all the fields!\n\n*Note: Passwords must be at least 8 characters long."
+          );
+          return false;
+        } else if (pass1Val !== pass2Val) {
+          alert("Passwords do not match!");
+          return false;
+        } else if (pass1Val.length < 8) {
+          alert(
+            "Password is too short!\n\n*Note: Password should be at least 8 characters long."
+          );
+          return false;
+        }
+
+        let formData = new FormData();
+
+        formData.append("avatar", avatar.files[0]);
+        formData.append("email", sanitizeInput(emailVal));
+        formData.append("password", sanitizeInput(pass1Val));
+        formData.append("full_name", sanitizeInput(full_nameVal));
+
+        $.ajax({
+          url: `${location.protocol}//${location.host}/auth/signup/`,
+          type: "POST",
+          headers: { "X-CSRFToken": csrftoken },
+          contentType: false,
+          processData: false,
+          data: formData,
+          success: function (data) {
+            window.location.href = `${location.protocol}//${location.host}/auth/login/`;
+          },
+          error: function (error) {
+            console.error("Registration failed:", error);
+          },
+        });
+      });
+    </script>
+  </body>
+</html>

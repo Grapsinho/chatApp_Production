@@ -11,7 +11,7 @@ urlpatterns = [
     path('', include('mainApp.urls')),
 
     # auth urls
-    #path('auth/', include('users.urls')),
+    path('auth/', include('users.urls')),
 
     #for development
     path("__debug__/", include(debug_toolbar.urls)),

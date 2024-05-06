@@ -26,8 +26,11 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     email = models.EmailField(null=True, unique=True)
     friends = models.ManyToManyField('self', through='add_friend_app.Friendship', symmetrical=False, related_name='friends_with', blank=True)
-
+    
     full_name = models.CharField(max_length=255, default='None')
+
+    bio = models.TextField(null=True, blank=True, default="No Bio For Now")
+    avatar = models.ImageField(null=True, default='avatar.svg')
 
     # ანუ იუზერნეიმ ფიელდ იქნება ემაილი ეხლა
     USERNAME_FIELD = "email"
