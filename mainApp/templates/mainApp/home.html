@@ -18,6 +18,63 @@
 
     <link rel="stylesheet" href="{% static 'css/tailwindcss-colors.css' %}" />
     <link rel="stylesheet" href="{% static 'css/home1.css' %}" />
+
+    <style>
+      #search_results {
+        position: absolute;
+        top: 90px;
+        overflow-y: scroll !important;
+        z-index: 100;
+        max-height: 350px;
+        background-color: white;
+        box-shadow: 20px 20px 60px #929292, -20px -20px 60px #ffffff;
+        width: 100%;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      .result_a_tag {
+        transition: all 0.3s;
+        padding: 0.3rem;
+        gap: 1rem;
+      }
+
+      .spinner-border {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        right: 0;
+      }
+
+      .result_a_tag:hover {
+        background: #0000002b;
+      }
+
+      .notification_count {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-color: rgb(194, 11, 11);
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        text-align: center;
+        color: #fff;
+      }
+
+      /* Styling for tabs */
+      .nav-tabs .nav-link {
+        margin-bottom: -1px;
+        border: 1px solid transparent;
+      }
+
+      .nav-tabs .nav-link.active {
+        border-color: #dee2e6 #dee2e6 #fff;
+      }
+    </style>
+
     <title>Chat</title>
   </head>
   <body>
@@ -33,9 +90,15 @@
             <li class="active">
               <a href="#" data-title="Chats"><i class="ri-chat-3-line"></i></a>
             </li>
-            <li>
-              <a href="#" data-title="Contacts"
-                ><i class="ri-contacts-line"></i
+            <li style="position: relative">
+              <div class="notification_count">{{ friend_requests_count }}</div>
+              <a
+                href="#"
+                class="button-b"
+                data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop2"
+                data-title="Notifications"
+                ><i class="ri-notification-3-line"></i
               ></a>
             </li>
             <li>
@@ -57,7 +120,9 @@
               </button>
               <ul class="chat-sidebar-profile-dropdown">
                 <li>
-                  <a href="#"><i class="ri-user-line"></i> Profile</a>
+                  <a href="{% url 'profile' request.user.email %}"
+                    ><i class="ri-user-line"></i> Profile</a
+                  >
                 </li>
                 <li>
                   <a href="{% url 'logout' %}"
@@ -86,10 +151,10 @@
             <form action="" class="content-sidebar-form">
               <input
                 type="search"
-                class="content-sidebar-input"
+                class="content-sidebar-input search-input"
                 placeholder="Search..."
               />
-              <button type="submit" class="content-sidebar-submit">
+              <button type="submit" class="content-sidebar-submit type-button">
                 <i class="ri-search-line"></i>
               </button>
             </form>
@@ -364,13 +429,30 @@
             <form action="" class="content-sidebar-form">
               <input
                 type="search"
-                class="content-sidebar-input"
+                class="content-sidebar-input search-input"
                 placeholder="Find Friends..."
               />
-              <button type="submit" class="content-sidebar-submit">
+              <button type="submit" class="content-sidebar-submit type-button">
                 <i class="ri-search-line"></i>
               </button>
             </form>
+
+            <div class="result" id="search_results" style="top: 120px">
+              <div
+                class="product_detail"
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  height: 250px;
+                  gap: 1rem;
+                  padding: 0.5rem;
+                "
+              ></div>
+
+              <div class="spinner-border" role="status" id="spinner">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
           </div>
           <!-- end: Content side -->
 
@@ -482,14 +564,221 @@
     </div>
     <!-- end modal -->
 
+    <!-- Modal for notifications -->
+    <div
+      class="modal fade"
+      id="staticBackdrop2"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="staticBackdropLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="staticBackdropLabel">
+              Notifications
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+
+          <!-- Tab Navigation -->
+          <ul class="nav nav-tabs" id="notificationTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link active"
+                id="requests-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#requests"
+                role="tab"
+                aria-controls="requests"
+                aria-selected="true"
+              >
+                Requests
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                id="declined-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#declined"
+                role="tab"
+                aria-controls="declined"
+                aria-selected="false"
+              >
+                Declined
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                id="accepted-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#accepted"
+                role="tab"
+                aria-controls="accepted"
+                aria-selected="false"
+              >
+                Accepted
+              </button>
+            </li>
+          </ul>
+
+          <!-- Tab Content -->
+          <div
+            class="tab-content"
+            id="notificationTabContent"
+            style="height: 300px; overflow-y: scroll"
+          >
+            <!-- Requests Section -->
+            <div
+              class="tab-pane fade show active"
+              id="requests"
+              role="tabpanel"
+              aria-labelledby="requests-tab"
+            >
+              <div class="modal-body">
+                {% for i in friend_requests %}
+                <!-- -->
+                {% if not i.rejected or i.accepted %}
+                <div class="d-flex align-items-center gap-2 mb-3">
+                  <a href="{% url 'profile' i.sender__email %}">
+                    <img
+                      src="static/images/{{i.sender__avatar}}"
+                      style="border-radius: 50%; width: 50px; height: 50px"
+                    />
+                  </a>
+                  <div style="display: flex; flex-direction: column">
+                    <span style="color: black">{{i.sender__full_name}}</span>
+                    <div class="d-flex gap-2">
+                      <button
+                        class="btn btn-success add_friend_appr"
+                        data-id="{{i.sender__pk}}"
+                        style="padding: 2px 0; width: 100px"
+                      >
+                        Accept
+                      </button>
+                      <button
+                        class="btn btn-danger decline_friend_request"
+                        data-id="{{i.sender__pk}}"
+                        style="padding: 2px 0; width: 100px"
+                      >
+                        Decline
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+                <!-- -->
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Declined Section -->
+            <div
+              class="tab-pane fade"
+              id="declined"
+              role="tabpanel"
+              aria-labelledby="declined-tab"
+            >
+              <div
+                class="modal-body d-flex"
+                style="flex-direction: column; gap: 1rem"
+              >
+                <!-- Content for declined requests -->
+                {% for i in declined_requests %}
+                <span
+                  style="color: black; background: #e0e0e0; padding: 0.5rem"
+                >
+                  {{i.receiver__full_name}} has declined your friend request
+                  <i
+                    class="ri-close-line delete_message_dec"
+                    data-id="{{i.pk}}"
+                    style="
+                      font-size: 1.2rem;
+                      background: red;
+                      color: white;
+                      cursor: pointer;
+                      padding: 0.2rem;
+                    "
+                  ></i>
+                </span>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Accepted Section -->
+            <div
+              class="tab-pane fade"
+              id="accepted"
+              role="tabpanel"
+              aria-labelledby="accepted-tab"
+            >
+              <div class="modal-body">
+                <!-- Content for accepted requests -->
+                {% for i in accepted_requests %}
+                <div class="d-flex align-items-center gap-2 mb-3">
+                  <li style="color: black">
+                    {{i.receiver__full_name}} has accepted your friend request
+                    <i
+                      class="ri-close-line delete_message_dec"
+                      data-id="{{i.pk}}"
+                      style="
+                        font-size: 1.2rem;
+                        background: red;
+                        color: white;
+                        cursor: pointer;
+                        padding: 0.2rem;
+                      "
+                    ></i>
+                  </li>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal Footer -->
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end modal -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <!-- base scripts for home page like update user open chats and others...-->
     <script src="{% static 'js/home1.js' %}"></script>
+    <!-- for searching users -->
+    <script src="{% static 'js/search_user1.js' %}"></script>
+    <!-- for adding user to the friend list -->
+    <script src="{% static 'js/handle_fr_requests.js' %}"></script>
+
     <script>
       let button_a = document.querySelector(".button-a");
+      let button_b = document.querySelector(".button-b");
 
       button_a.addEventListener("click", (e) => {
+        e.preventDefault();
+      });
+
+      button_b.addEventListener("click", (e) => {
         e.preventDefault();
       });
     </script>

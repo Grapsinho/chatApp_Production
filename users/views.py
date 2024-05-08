@@ -82,6 +82,7 @@ def logoutForm(request):
 from rest_framework import status
 from .serializers import UserUpdateSerializer
 from .permissions import VendorUpdatePermission
+import os
 
 class VendorUpdateView(APIView):
     permission_classes = [VendorUpdatePermission]
@@ -103,6 +104,13 @@ class VendorUpdateView(APIView):
             if 'avatar' in data:
                 avatar_file = request.FILES.get('avatar')
                 if avatar_file:
+                    # Retrieve the path of the photo associated with the sub-product
+                    photo_path = vendor.avatar.url
+
+                    # Delete the photo file from the storage
+                    if os.path.exists(f'static{photo_path}'):
+                        os.remove(f'static{photo_path}')
+                        
                     vendor.avatar = avatar_file
                 # If the 'avatar' field is in data but has no file, remove it from data
                 else:

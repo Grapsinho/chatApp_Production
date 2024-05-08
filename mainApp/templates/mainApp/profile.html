@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile Page</title>
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}" />
+
+    <style>
+      .add-friend-button {
+        margin: 0;
+      }
+
+      .add_friend_appr,
+      .decline_friend_request {
+        background-color: #3f51b5;
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="container">
+        <a href="/" class="go-back-button">Go Back</a>
+        <h1 class="site-title">User Profile</h1>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="profile">
+        <div class="profile-card">
+          <div class="profile-header">
+            <img
+              src="/static{{user.avatar.url}}"
+              alt="Profile Picture"
+              class="profile-picture"
+            />
+            <div class="profile-info">
+              <h2 class="profile-name">{{user.full_name}}</h2>
+            </div>
+          </div>
+          <div class="profile-details">
+            <p>{{user.bio}}</p>
+          </div>
+          <div class="friends-list">
+            <h3>Friends List</h3>
+            <div style="display: flex; gap: 1rem; align-items: center">
+              <div class="dropdown">
+                <button class="dropdown-button">Friends</button>
+                <ul id="dropdown-menu" class="dropdown-menu">
+                  {% for i in friends %}
+                  <a
+                    href="{% url 'profile' i.email %}"
+                    style="text-decoration: none"
+                  >
+                    <li style="color: black">
+                      <img
+                        src="/static{{i.avatar.url}}"
+                        alt="{{i.full_name}} avatar"
+                        class="friend-avatar"
+                      />{{i.full_name}}
+                    </li>
+                  </a>
+                  {% endfor %}
+                </ul>
+              </div>
+              {% if request.user in friends %}
+              <p>Already Friends</p>
+              {% else %}
+              <div>
+                {% if request.user != user %}
+
+                <!-- if friend request is received already user have to just accept it -->
+                {% if bool_friend %}
+                <button class="add_friend_appr" data-id="{{user.pk}}">
+                  accept
+                </button>
+
+                <button class="decline_friend_request" data-id="{{user.pk}}">
+                  decline
+                </button>
+                {% else %}
+                <!-- if user is already sent friend request he can't send it again or else it will be fine -->
+                {% if bool_friend2 %}
+                <button
+                  class="add-friend-button"
+                  style="pointer-events: none"
+                  data-id="{{user.pk}}"
+                >
+                  Sent
+                </button>
+                {% else %}
+                <button class="add-friend-button" data-id="{{user.pk}}">
+                  Add Friend
+                </button>
+                {% endif %}
+                <!-- -->
+                {% endif %}
+                <!-- -->
+
+                {% else %}
+                <input type="hidden" name="" />
+                {% endif %}
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>&copy; 2024 All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/send_friend_request.js' %}"></script>
+    <script src="{% static 'js/handle_fr_requests.js' %}"></script>
+
+    <script>
+      // Toggle the dropdown menu
+      function toggleDropdownMenu() {
+        const dropdownMenu = document.getElementById("dropdown-menu");
+        dropdownMenu.style.display =
+          dropdownMenu.style.display === "block" ? "none" : "block";
+      }
+
+      // Hide the dropdown menu
+      function hideDropdownMenu() {
+        const dropdownMenu = document.getElementById("dropdown-menu");
+        dropdownMenu.style.display = "none";
+      }
+      // Event listeners
+      document.addEventListener("DOMContentLoaded", () => {
+        // Add event listener to the dropdown button
+        const dropdownButton = document.querySelector(".dropdown-button");
+        dropdownButton.addEventListener("click", toggleDropdownMenu);
+
+        // Add event listener for document clicks
+        document.addEventListener("click", (event) => {
+          const dropdownMenu = document.getElementById("dropdown-menu");
+          const dropdownButton = document.querySelector(".dropdown-button");
+
+          // If the click is outside the dropdown menu and dropdown button, hide the dropdown
+          if (
+            !dropdownMenu.contains(event.target) &&
+            !dropdownButton.contains(event.target)
+          ) {
+            hideDropdownMenu();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

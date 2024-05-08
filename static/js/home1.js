@@ -27,8 +27,6 @@ function sanitizeInput(userInput) {
 
 let jwtToken = localStorage.getItem("access_token");
 
-console.log(jwtToken);
-
 function getCookie(name) {
   var cookieValue = null;
   if (document.cookie && document.cookie !== "") {
@@ -89,6 +87,8 @@ $(".update_btn-profile").on("click", function () {
         if (
           xhr.responseJSON.detail == "Given token not valid for any token type"
         ) {
+          alert("You Should Login Again");
+
           window.location.href = `${location.protocol}//${location.host}/auth/logout/`;
         }
       } catch (error) {

@@ -13,6 +13,9 @@ urlpatterns = [
     # auth urls
     path('auth/', include('users.urls')),
 
+    # add friend urls
+    path('add_friend/', include('add_friend_app.urls')),
+
     #for development
     path("__debug__/", include(debug_toolbar.urls)),
 ]
