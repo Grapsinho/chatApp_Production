@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from users.models import FriendRequest, User, Friendship
+from chat.models import Chat, Message
 
 # Create your views here.
 
@@ -19,11 +20,32 @@ def home(request):
 
     message_len = len(requests_for_user) + len(declined_requests) + len(accepted_requests)
 
+    friends = user.friends.all()
+    friends_len = len(friends)
+
+    last_messages = {}
+
+    for i in range(friends_len):
+        # first i query whole chat
+        try:
+            user_chats = Chat.objects.get(sender=request.user, receiver=friends[i])
+        except:
+            user_chats = Chat.objects.get(sender=friends[i], receiver=request.user)
+        # then only append last message content and hour
+        last_messages[friends[i].pk] = [user_chats.messages.last().content, user_chats.messages.last().timestamp.strftime('%H:%M'), user_chats.pk]
+
+    has_friends = False
+    if len(friends) != 0:
+        has_friends = True
+
     context = {
         'friend_requests': requests_for_user,
         'friend_requests_count': message_len,
         'accepted_requests': accepted_requests,
-        "declined_requests": declined_requests
+        "declined_requests": declined_requests,
+        'has_friends': has_friends,
+        'friends': friends,
+        "last_messages": last_messages
     }
 
     return render(request, 'mainApp/home.html', context)

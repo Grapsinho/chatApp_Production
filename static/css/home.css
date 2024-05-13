@@ -463,8 +463,7 @@ body {
   transition: all 0.15s ease-in-out;
 }
 .conversation-item.me .conversation-item-dropdown {
-  left: unset;
-  right: 0;
+  left: -32px;
 }
 .conversation-item-wrapper:hover .conversation-item-dropdown {
   opacity: 1;
@@ -516,22 +515,23 @@ body {
   visibility: visible;
   transform: scale(1);
 }
-.conversation-item-dropdown-list a {
+.conversation-item-dropdown-list button {
   display: flex;
   align-items: center;
   text-decoration: none;
   color: var(--slate-400);
   font-size: 13px;
   padding: 6px 12px;
+  border: none;
 }
-.conversation-item-dropdown-list a:hover {
+.conversation-item-dropdown-list button:hover {
   background-color: var(--slate-100);
   color: var(--slate-600);
 }
-.conversation-item-dropdown-list a:active {
+.conversation-item-dropdown-list button:active {
   background-color: var(--slate-200);
 }
-.conversation-item-dropdown-list a i {
+.conversation-item-dropdown-list button i {
   font-size: 16px;
   margin-right: 8px;
 }
@@ -764,3 +764,78 @@ body {
   }
 }
 /* end: Breakpoints */
+
+/* added by me */
+.comment_deleted_popUp {
+  position: fixed;
+  bottom: 0;
+  right: 10px;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: -1000;
+}
+
+.comment_deleted_popUp.show {
+  /* Visible state */
+  opacity: 1;
+  z-index: 11;
+}
+
+.comment_deleted_popUp.hide {
+  /* Hidden state */
+  opacity: 0;
+}
+
+#search_results {
+  position: absolute;
+  top: 90px;
+  overflow-y: scroll !important;
+  z-index: 100;
+  max-height: 350px;
+  background-color: white;
+  box-shadow: 20px 20px 60px #929292, -20px -20px 60px #ffffff;
+  width: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+
+.result_a_tag {
+  transition: all 0.3s;
+  padding: 0.3rem;
+  gap: 1rem;
+}
+
+.spinner-border {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: 0;
+}
+
+.result_a_tag:hover {
+  background: #0000002b;
+}
+
+.notification_count {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: rgb(194, 11, 11);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  text-align: center;
+  color: #fff;
+}
+
+/* Styling for tabs */
+.nav-tabs .nav-link {
+  margin-bottom: -1px;
+  border: 1px solid transparent;
+}
+
+.nav-tabs .nav-link.active {
+  border-color: #dee2e6 #dee2e6 #fff;
+}

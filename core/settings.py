@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'mainApp.apps.MainappConfig',
     'add_friend_app.apps.AddFriendAppConfig',
+    'chat.apps.ChatConfig',
 
     #api
     'rest_framework',

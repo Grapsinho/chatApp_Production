@@ -16,6 +16,9 @@ urlpatterns = [
     # add friend urls
     path('add_friend/', include('add_friend_app.urls')),
 
+    # chat urls
+    path('chat/', include('chat.urls')),
+
     #for development
     path("__debug__/", include(debug_toolbar.urls)),
 ]
