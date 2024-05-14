@@ -82,3 +82,18 @@ def delete_friend_request(request):
         return JsonResponse({'success': True})
     except:
         return JsonResponse({'success': False}, status=404)
+    
+def remove_from_friend(request):
+    """
+    View to delete friend.
+    """
+
+    user_we_want_to_unfriend = request.POST.get('user_id')
+    user_we_want_to_unfriend_user = User.objects.get(pk=user_we_want_to_unfriend)
+
+    try:
+        Friendship.objects.get(user=request.user, friend=user_we_want_to_unfriend_user).delete()
+        Friendship.objects.get(user=user_we_want_to_unfriend_user, friend=request.user).delete()
+        return JsonResponse({'success': True})
+    except:
+        return JsonResponse({'success': False}, status=404)

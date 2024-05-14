@@ -189,11 +189,15 @@ document.querySelectorAll(".freind_chats").forEach(function (item) {
         const user_name_html = document.querySelector(
           ".conversation-user-name"
         );
+        const link_to_user_profileChat = document.querySelector(
+          ".link_to_user_profileChat"
+        );
         const conversation_wrapper = $(".conversation-wrapper");
         conversation_wrapper.empty();
 
         send_message_button.setAttribute("data-chat_id", chat_id);
         user_img_html.src = `static${data.top_info.img_url}`;
+        link_to_user_profileChat.href = `${location.protocol}//${location.host}/profile/${data.top_info.email}/`;
         user_name_html.textContent = data.top_info.user_full_name;
 
         const allMessages = data.chat_messages.friend.concat(

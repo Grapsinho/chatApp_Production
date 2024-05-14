@@ -23,12 +23,14 @@ def get_chats_betweenUsers(request):
     if chat.sender != request.user:
         context = {
             'user_full_name': chat.sender.full_name,
-            'img_url': chat.sender.avatar.url
+            'img_url': chat.sender.avatar.url,
+            'email': chat.sender.email
         }
     else:
         context = {
             'user_full_name': chat.receiver.full_name,
-            'img_url': chat.receiver.avatar.url
+            'img_url': chat.receiver.avatar.url,
+            'email': chat.receiver.email
         }
 
     # Process messages

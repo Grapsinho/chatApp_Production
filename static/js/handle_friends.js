@@ -18,6 +18,8 @@ var csrftoken = getCookie("csrftoken");
 $(document).on("click", ".add-friend-button", function () {
   const add_friend_id = document.querySelector(".add-friend-button");
 
+  add_friend_id.style.pointerEvents = "none";
+
   $.ajax({
     type: "POST",
     url: "/add_friend/friend_request/",
@@ -29,6 +31,29 @@ $(document).on("click", ".add-friend-button", function () {
     },
     success: function (response) {
       add_friend_id.textContent = "Request Sent";
+      add_friend_id.style.fontSize = "13px";
+    },
+    error: function (xhr, errmsg, err) {
+      console.log(`Error!`);
+      console.log(err);
+    },
+  });
+});
+
+$(document).on("click", ".unfriendBtn", function () {
+  const add_friend_id = document.querySelector(".unfriendBtn");
+
+  $.ajax({
+    type: "POST",
+    url: "/add_friend/remove_from_friend/",
+    headers: {
+      "X-CSRFToken": csrftoken,
+    },
+    data: {
+      "user_id": add_friend_id.dataset.id,
+    },
+    success: function (response) {
+      add_friend_id.textContent = "Removed";
       add_friend_id.style.fontSize = "13px";
       add_friend_id.style.pointerEvents = "none";
     },
