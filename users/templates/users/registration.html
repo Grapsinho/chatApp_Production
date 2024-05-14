@@ -98,13 +98,7 @@
         const full_nameVal = full_name.value;
         const avatarVal = avatar.value;
 
-        if (
-          !emailVal ||
-          !pass1Val ||
-          !pass2Val ||
-          !full_nameVal ||
-          !avatarVal
-        ) {
+        if (!emailVal || !pass1Val || !pass2Val || !full_nameVal) {
           alert(
             "Please fill out all the fields!\n\n*Note: Passwords must be at least 8 characters long."
           );
@@ -120,8 +114,9 @@
         }
 
         let formData = new FormData();
-
-        formData.append("avatar", avatar.files[0]);
+        if (avatar.files[0]) {
+          formData.append("avatar", avatar.files[0]);
+        }
         formData.append("email", sanitizeInput(emailVal));
         formData.append("password", sanitizeInput(pass1Val));
         formData.append("full_name", sanitizeInput(full_nameVal));
