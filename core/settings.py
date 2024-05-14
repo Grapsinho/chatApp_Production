@@ -19,7 +19,7 @@ SECRET_KEY = secret_key
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['chatapp-production-jbpi.onrender.com']
+ALLOWED_HOSTS = ['chatapp-production-jbpi.onrender.com', 'localhost']
 
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
