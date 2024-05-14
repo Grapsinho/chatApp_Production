@@ -17,9 +17,9 @@ secret_key = os.environ.get('KEY_SECRET')
 SECRET_KEY = secret_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['https://chatapp-production-jbpi.onrender.com']
+ALLOWED_HOSTS = ['chatapp-production-jbpi.onrender.com']
 
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
