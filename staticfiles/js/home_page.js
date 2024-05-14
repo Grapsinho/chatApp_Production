@@ -260,7 +260,7 @@ document.querySelectorAll(".freind_chats").forEach(function (item) {
           ".delete_message_btn"
         );
         const socket2 = new WebSocket(
-          `ws://${host}/ws/chat/delete_message/${chat_id}/`
+          `wss://${host}/wss/chat/delete_message/${chat_id}/`
         );
 
         function sendMessage2(messageId, chat_id) {
@@ -301,7 +301,7 @@ document.querySelectorAll(".freind_chats").forEach(function (item) {
           sendMessage(message, sender_id, chat_id);
         });
 
-        const socket = new WebSocket(`ws://${host}/ws/chat/${chat_id}/`);
+        const socket = new WebSocket(`wss://${host}/wss/chat/${chat_id}/`);
 
         socket.onmessage = function (event) {
           let mes = JSON.parse(event.data);
