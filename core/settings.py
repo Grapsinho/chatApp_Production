@@ -2,17 +2,19 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+import os
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv()
 
+secret_key = os.environ.get('KEY_SECRET')
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%-k2jay&^mp#-@#a@l)pl%9y&iyh@1$z!v4ek=-hsw21s*1@ib'
+SECRET_KEY = secret_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -45,9 +47,6 @@ INSTALLED_APPS = [
 
     #for ASGI
     'channels',
-
-    #Development
-    "debug_toolbar",
 ]
 
 AUTH_USER_MODEL = 'users.User'
@@ -78,9 +77,6 @@ MIDDLEWARE = [
 
     #this is for origins that are allowed to send requests to the api
     'corsheaders.middleware.CorsMiddleware',
-
-    #debug-toolbar
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 # ვიყენებთ ამას იმიტომ რომ ბრაუზერმა არ დაბლოკოს ჩვენი რექუესტები ხოლო უკვე პროდუქციაში შევცვლით
@@ -179,3 +175,17 @@ MEDIA_URL = 'images/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+email_backend = os.environ.get('EMAIL_BACKEND')
+email_host = os.environ.get('EMAIL_HOST')
+email_use_tls = os.environ.get('EMAIL_USE_TLS')
+email_port = os.environ.get('EMAIL_PORT')
+email_host_user = os.environ.get('EMAIL_HOST_USER')
+email_host_password = os.environ.get('EMAIL_HOST_PASSWORD')
+
+EMAIL_BACKEND = email_backend
+EMAIL_HOST = email_host
+EMAIL_USE_TLS = email_use_tls
+EMAIL_PORT = email_port
+EMAIL_HOST_USER = email_host_user
+EMAIL_HOST_PASSWORD = email_host_password
