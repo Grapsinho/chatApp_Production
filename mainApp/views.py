@@ -5,7 +5,7 @@ from chat.models import Chat, Message
 
 # Create your views here.
 
-@login_required(login_url='https://chatapp-production-jbpi.onrender.com/auth/login')
+@login_required(login_url='login')
 def home(request):
     """
     View function for home page of site.
@@ -50,7 +50,7 @@ def home(request):
 
     return render(request, 'mainApp/home.html', context)
 
-@login_required(login_url='https://chatapp-production-jbpi.onrender.com/auth/login')
+@login_required(login_url='login')
 def profile(request, email):
     """
     View function for profile page.
